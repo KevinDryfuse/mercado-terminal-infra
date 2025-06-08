@@ -1,3 +1,8 @@
+variable "subscription_id" {
+  type        = string
+  description = "Azure Subscription ID"
+}
+
 variable "location" {
   type        = string
   description = "The Azure region where the resources will be created"

@@ -33,6 +33,7 @@ jobs:
 
       - name: 🧠 Map Secrets for Client
         run: |
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
           if [[ "${{ matrix.client }}" == "dg" ]]; then
             echo "TF_VAR_db_admin_user=${{ secrets.TF_VAR_DB_ADMIN_USER_DG }}" >> $GITHUB_ENV
             echo "TF_VAR_db_admin_password=${{ secrets.TF_VAR_DB_ADMIN_PASSWORD_DG }}" >> $GITHUB_ENV

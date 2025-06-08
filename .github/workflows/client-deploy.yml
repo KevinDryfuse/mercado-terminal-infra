@@ -1,0 +1,51 @@
+name: 🚀 Terraform Environments
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        client: [dg]
+
+    name: 🌍 Deploy - ${{ matrix.client | upper }}
+
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v3
+
+    - name: 🔐 Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 🛠️ Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    - name: 🧪 Terraform Init
+      run: terraform -chdir=envs/${{ matrix.client }} init
+
+    - name: ✅ Terraform Validate
+      run: terraform -chdir=envs/${{ matrix.client }} validate
+
+    - name: 🔍 Terraform Plan
+      env:
+        TF_VAR_db_admin_user: ${{ secrets['TF_VAR_DB_ADMIN_USER_' + matrix.client | upper] }}
+        TF_VAR_db_admin_password: ${{ secrets['TF_VAR_DB_ADMIN_PASSWORD_' + matrix.client | upper] }}
+      run: terraform -chdir=envs/${{ matrix.client }} plan
+
+    - name: 🚀 Terraform Apply
+      if: github.event.pull_request.merged == true
+      env:
+        TF_VAR_db_admin_user: ${{ secrets['TF_VAR_DB_ADMIN_USER_' + matrix.client | upper] }}
+        TF_VAR_db_admin_password: ${{ secrets['TF_VAR_DB_ADMIN_PASSWORD_' + matrix.client | upper] }}
+      run: terraform -chdir=envs/${{ matrix.client }} apply -auto-approve

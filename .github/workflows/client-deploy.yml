@@ -1,4 +1,4 @@
-name: 🚀 Terraform Environments
+name: 🌍 Terraform Deploy
 
 on:
   pull_request:
@@ -17,7 +17,7 @@ jobs:
       matrix:
         client: [dg]
 
-    name: 🌍 Deploy - ${{ matrix.client | upper }}
+    name: 🌍 Deploy - ${{ matrix.client }}
 
     steps:
     - name: 📥 Checkout Code
@@ -31,6 +31,10 @@ jobs:
     - name: 🛠️ Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
+    - name: 🔧 Set Uppercase Client Name
+      id: vars
+      run: echo "CLIENT_UPPER=$(echo '${{ matrix.client }}' | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
+
     - name: 🧪 Terraform Init
       run: terraform -chdir=envs/${{ matrix.client }} init
 
@@ -39,13 +43,13 @@ jobs:
 
     - name: 🔍 Terraform Plan
       env:
-        TF_VAR_db_admin_user: ${{ secrets['TF_VAR_DB_ADMIN_USER_' + matrix.client | upper] }}
-        TF_VAR_db_admin_password: ${{ secrets['TF_VAR_DB_ADMIN_PASSWORD_' + matrix.client | upper] }}
+        TF_VAR_db_admin_user: ${{ secrets['TF_VAR_DB_ADMIN_USER_' + steps.vars.outputs.CLIENT_UPPER] }}
+        TF_VAR_db_admin_password: ${{ secrets['TF_VAR_DB_ADMIN_PASSWORD_' + steps.vars.outputs.CLIENT_UPPER] }}
       run: terraform -chdir=envs/${{ matrix.client }} plan
 
     - name: 🚀 Terraform Apply
       if: github.event.pull_request.merged == true
       env:
-        TF_VAR_db_admin_user: ${{ secrets['TF_VAR_DB_ADMIN_USER_' + matrix.client | upper] }}
-        TF_VAR_db_admin_password: ${{ secrets['TF_VAR_DB_ADMIN_PASSWORD_' + matrix.client | upper] }}
+        TF_VAR_db_admin_user: ${{ secrets['TF_VAR_DB_ADMIN_USER_' + steps.vars.outputs.CLIENT_UPPER] }}
+        TF_VAR_db_admin_password: ${{ secrets['TF_VAR_DB_ADMIN_PASSWORD_' + steps.vars.outputs.CLIENT_UPPER] }}
       run: terraform -chdir=envs/${{ matrix.client }} apply -auto-approve

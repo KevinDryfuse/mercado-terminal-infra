@@ -34,6 +34,8 @@ jobs:
       - name: 🧠 Map Secrets for Client
         run: |
           echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "TF_LOG=DEBUG" >> $GITHUB_ENV
+          echo "TF_LOG_PATH=terraform.log" >> $GITHUB_ENV
           if [[ "${{ matrix.client }}" == "dg" ]]; then
             echo "TF_VAR_db_admin_user=${{ secrets.TF_VAR_DB_ADMIN_USER_DG }}" >> $GITHUB_ENV
             echo "TF_VAR_db_admin_password=${{ secrets.TF_VAR_DB_ADMIN_PASSWORD_DG }}" >> $GITHUB_ENV
@@ -47,6 +49,12 @@ jobs:
 
       - name: 🔍 Terraform Plan
         run: terraform -chdir=envs/${{ matrix.client }} plan
+
+      - name: 🧾 Dump Terraform Log (if plan fails)
+        if: failure()
+        run: |
+          echo "--------- Terraform Log ---------"
+          cat terraform.log || echo "No log file found."
 
       - name: 🚀 Terraform Apply
         if: github.event.pull_request.merged == true

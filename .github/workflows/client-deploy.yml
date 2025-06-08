@@ -17,39 +17,36 @@ jobs:
       matrix:
         client: [dg]
 
-    name: 🌍 Deploy - ${{ matrix.client }}
+    name: 🛠️ Terraform - ${{ matrix.client }}
 
     steps:
-    - name: 📥 Checkout Code
-      uses: actions/checkout@v3
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v3
 
-    - name: 🔐 Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: 🔐 Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: 🛠️ Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+      - name: 🧰 Setup Terraform
+        uses: hashicorp/setup-terraform@v2
 
-    - name: 🔧 Set Uppercase Client Name
-      id: vars
-      run: echo "CLIENT_UPPER=$(echo '${{ matrix.client }}' | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
+      - name: 🧠 Map Secrets for Client
+        run: |
+          if [[ "${{ matrix.client }}" == "dg" ]]; then
+            echo "TF_VAR_db_admin_user=${{ secrets.TF_VAR_DB_ADMIN_USER_DG }}" >> $GITHUB_ENV
+            echo "TF_VAR_db_admin_password=${{ secrets.TF_VAR_DB_ADMIN_PASSWORD_DG }}" >> $GITHUB_ENV
+          fi
 
-    - name: 🧪 Terraform Init
-      run: terraform -chdir=envs/${{ matrix.client }} init
+      - name: 🔧 Terraform Init
+        run: terraform -chdir=envs/${{ matrix.client }} init
 
-    - name: ✅ Terraform Validate
-      run: terraform -chdir=envs/${{ matrix.client }} validate
+      - name: ✅ Terraform Validate
+        run: terraform -chdir=envs/${{ matrix.client }} validate
 
-    - name: 🔍 Terraform Plan
-      env:
-        TF_VAR_db_admin_user: ${{ secrets['TF_VAR_DB_ADMIN_USER_' + steps.vars.outputs.CLIENT_UPPER] }}
-        TF_VAR_db_admin_password: ${{ secrets['TF_VAR_DB_ADMIN_PASSWORD_' + steps.vars.outputs.CLIENT_UPPER] }}
-      run: terraform -chdir=envs/${{ matrix.client }} plan
+      - name: 🔍 Terraform Plan
+        run: terraform -chdir=envs/${{ matrix.client }} plan
 
-    - name: 🚀 Terraform Apply
-      if: github.event.pull_request.merged == true
-      env:
-        TF_VAR_db_admin_user: ${{ secrets['TF_VAR_DB_ADMIN_USER_' + steps.vars.outputs.CLIENT_UPPER] }}
-        TF_VAR_db_admin_password: ${{ secrets['TF_VAR_DB_ADMIN_PASSWORD_' + steps.vars.outputs.CLIENT_UPPER] }}
-      run: terraform -chdir=envs/${{ matrix.client }} apply -auto-approve
+      - name: 🚀 Terraform Apply
+        if: github.event.pull_request.merged == true
+        run: terraform -chdir=envs/${{ matrix.client }} apply -auto-approve

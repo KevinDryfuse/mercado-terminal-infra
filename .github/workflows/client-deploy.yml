@@ -37,7 +37,7 @@ jobs:
           echo "TF_VAR_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
           echo "TF_LOG=DEBUG" >> $GITHUB_ENV
           echo "TF_LOG_PATH=terraform.log" >> $GITHUB_ENV
-          
+
           if [[ "${{ matrix.client }}" == "dg" ]]; then
             echo "TF_VAR_db_admin_user=${{ secrets.TF_VAR_DB_ADMIN_USER_DG }}" >> $GITHUB_ENV
             echo "TF_VAR_db_admin_password=${{ secrets.TF_VAR_DB_ADMIN_PASSWORD_DG }}" >> $GITHUB_ENV
@@ -58,7 +58,7 @@ jobs:
 
       - name: 📄 Upload Terraform Log
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: terraform-log-${{ matrix.client }}
           path: terraform.log

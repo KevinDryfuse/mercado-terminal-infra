@@ -1,6 +1,6 @@
 # 🛠 Mercado Terminal Infrastructure
 
-This repository defines the cloud infrastructure for the **Mercado Terminal** project — a distributed, embedded coupon kiosk system deployed at retail partners like Dollar General.
+This repository defines the cloud infrastructure for the **Mercado Terminal** project — a distributed, embedded terminal system deployed at retail partners like DG.
 
 Infrastructure is managed using [Terraform](https://www.terraform.io/) and deployed to **Microsoft Azure** using **GitHub Actions**.
 
@@ -10,14 +10,14 @@ Infrastructure is managed using [Terraform](https://www.terraform.io/) and deplo
 
 This Terraform setup provisions the following Azure components:
 
-| Resource Type          | Description                                                                 |
-|------------------------|-----------------------------------------------------------------------------|
-| **Resource Group**     | Isolated per environment (e.g. `rg-kiosk-dg-dev`)                           |
-| **Virtual Network**    | Custom VNet with subnets for apps and databases                             |
-| **Subnets**            | Separate subnets: `apps-subnet` and `db-subnet`                             |
-| **Private DNS Zone**   | Internal resolution for PostgreSQL flexible server                          |
-| **PostgreSQL Server**  | Azure Flexible Server (private access, no public endpoint)                  |
-| **Private DNS Link**   | Connects the DNS zone to the VNet                                            |
+| Resource Type          | Description                                                |
+|------------------------|------------------------------------------------------------|
+| **Resource Group**     | Isolated per environment (e.g. `rg-terminal-dg-dev`)       |
+| **Virtual Network**    | Custom VNet with subnets for apps and databases            |
+| **Subnets**            | Separate subnets: `apps-subnet` and `db-subnet`            |
+| **Private DNS Zone**   | Internal resolution for PostgreSQL flexible server         |
+| **PostgreSQL Server**  | Azure Flexible Server (private access, no public endpoint) |
+| **Private DNS Link**   | Connects the DNS zone to the VNet                          |
 
 ---
 
@@ -46,7 +46,7 @@ GitHub Actions is used to:
 
 Currently supported environments:
 
-- 🏬 `dg` — Dollar General kiosk deployment
+- 🏬 `dg` - DG client depoloyment
 
 > Add new directories under `envs/` for other clients like `kroger`, `homedepot`, etc.
 
@@ -57,7 +57,7 @@ Currently supported environments:
 ```commandline
 mercado-terminal-infra/
 ├── envs/
-│ └── dg/ # Dollar General environment
+│ └── dg/ # Specific DG client environment
 │ ├── main.tf
 │ ├── variables.tf
 │ └── outputs.tf

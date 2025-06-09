@@ -1,0 +1,47 @@
+name: Client Infrastructure Deployment
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'envs/**'
+      - 'modules/**'
+
+jobs:
+  terraform:
+    name: Terraform Plan (${{ matrix.client }}-${{ matrix.environment }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        client: ["dg"]          # Add new clients here
+        environment: ["dev"]    # Add or remove environments here
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      TF_VAR_environment: ${{ matrix.environment }}  # Dynamically set from matrix
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.8.5"
+
+      - name: Terraform Init
+        working-directory: envs/${{ matrix.client }}
+        run: terraform init
+
+      - name: Terraform Validate
+        working-directory: envs/${{ matrix.client }}
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: envs/${{ matrix.client }}
+        run: terraform plan -var="environment=${{ env.TF_VAR_environment }}"

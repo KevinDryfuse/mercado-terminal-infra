@@ -1,7 +1,3 @@
-output "vnet_id" {
-  value = azurerm_virtual_network.vnet.id
-}
-
-output "db_subnet_id" {
-  value = azurerm_subnet.db.id
+output "resource_group_id" {
+  value = azurerm_resource_group.main.id
 }

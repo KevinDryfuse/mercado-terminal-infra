@@ -1,2 +1,3 @@
-# Mercado Terminal Infra
-Infrastructure-as-Code for Mercado Terminal using Terraform.
+# Mercado Terminal Infrastructure
+
+Intentional Terraform infrastructure setup for Mercado Terminal.

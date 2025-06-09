@@ -30,6 +30,12 @@ variable "sku_name" {
   description = "The SKU name for the PostgreSQL server"
 }
 
+variable "tier" {
+  type        = string
+  default     = "Burstable"
+  description = "The pricing tier for the PostgreSQL server"
+}
+
 variable "storage_mb" {
   type        = number
   default     = 32768

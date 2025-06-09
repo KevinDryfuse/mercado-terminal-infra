@@ -18,7 +18,8 @@ module "postgres" {
   resource_group_name = var.resource_group_name
   db_admin_user       = var.db_admin_user
   db_admin_password   = var.db_admin_password
-  sku_name            = "Standard_B1ms"
+  sku_name            = "standard_b1ms"
+  tier                = "Burstable"
   storage_mb          = 32768
   subnet_id           = module.network.db_subnet_id
 }

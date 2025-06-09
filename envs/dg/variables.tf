@@ -1,25 +1,17 @@
-variable "subscription_id" {
-  type        = string
-  description = "Azure Subscription ID"
-}
-
 variable "location" {
   type        = string
-  description = "The Azure region where the resources will be created"
+  default     = "eastus"
+  description = "Azure deployment region"
 }
 
-variable "resource_group_name" {
+variable "client_name" {
   type        = string
-  description = "The name of the resource group"
+  default     = "dg"
+  description = "Client identifier"
 }
 
-variable "db_admin_user" {
+variable "environment" {
   type        = string
-  description = "The administrator username for the PostgreSQL server"
-}
-
-variable "db_admin_password" {
-  type        = string
-  sensitive   = true
-  description = "The administrator password for the PostgreSQL server"
+  default     = "dev"
+  description = "Deployment environment (dev, tst, stg, prd)"
 }

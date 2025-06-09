@@ -1,19 +1,5 @@
-# Terraform State Files
+.terraform/
 *.tfstate
 *.tfstate.*
-
-# Crash Logs
-crash.log
-
-# CLI Configuration
-.terraform/
-.terraform.lock.hcl
-
-# Sensitive Variable Overrides
-*.auto.tfvars
-
-# Plan Files
-*.tfplan
-
-# Local Execution Metadata
-.terraform.tfstate.lock.info
+terraform.tfvars
+*.log

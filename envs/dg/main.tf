@@ -19,7 +19,6 @@ module "postgres" {
   db_admin_user       = var.db_admin_user
   db_admin_password   = var.db_admin_password
   sku_name            = "standard_b1ms"
-  tier                = "Burstable"
   storage_mb          = 32768
   subnet_id           = module.network.db_subnet_id
 }

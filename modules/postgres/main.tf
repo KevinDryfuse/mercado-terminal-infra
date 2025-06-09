@@ -6,7 +6,6 @@ resource "azurerm_postgresql_flexible_server" "postgres" {
   administrator_password = var.db_admin_password
   version                = "15"
   sku_name               = var.sku_name
-  tier                   = var.tier
   storage_mb             = var.storage_mb
   delegated_subnet_id    = var.subnet_id
   private_dns_zone_id    = var.private_dns_zone_id

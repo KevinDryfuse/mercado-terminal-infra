@@ -1,11 +1,17 @@
-variable "db_admin_user" {
-  description = "Database admin username for DG"
+variable "location" {
   type        = string
-  sensitive   = true
+  default     = "eastus"
+  description = "Azure deployment region"
 }
 
-variable "db_admin_password" {
-  description = "Database admin password for DG"
+variable "client_name" {
   type        = string
-  sensitive   = true
+  default     = "dg"
+  description = "Client identifier"
+}
+
+variable "environment" {
+  type        = string
+  default     = "dev"
+  description = "Deployment environment (dev, tst, stg, prd)"
 }
